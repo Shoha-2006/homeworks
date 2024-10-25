@@ -216,8 +216,8 @@ A = float(input("1 kg shokolad narxi (so'm): "))
 B = float(input("1 kg konfet narxi (so'm): "))
 X = float(input("Shokolad miqdori X kg: "))
 Y = float(input("Konfet miqdori Y kg: "))
-total_cost = A * X + B * Y
-print("Shokolad va konfetning umumiy narxi: ", total_cost)
+total_diff = A * X - B * Y
+print("Shokolad va konfetning umumiy farqi: ", total_diff)
 
 # 35-masala: Qayiqning daryo oqimi bo'yicha va oqimga qarshi yurishi
 V = float(input("Qayiqning tezligi (km/soat): "))
