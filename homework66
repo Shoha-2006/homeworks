@@ -1,0 +1,181 @@
+import math
+
+class Vector:
+    def __init__(self, *components):
+        self.components = list(components)
+
+    def __str__(self):
+        return f"Vector{tuple(self.components)}"
+
+    def __bool__(self):
+        return any(self.components)
+
+    def __len__(self):
+        return len(self.components)
+
+    def __getitem__(self, index):
+        return self.components[index]
+
+    def __setitem__(self, index, value):
+        self.components[index] = value
+
+    def __add__(self, other):
+        if len(self) != len(other):
+            raise ValueError("Vectors must have the same length for addition.")
+        return Vector(*(a + b for a, b in zip(self.components, other.components)))
+
+    def __sub__(self, other):
+        if len(self) != len(other):
+            raise ValueError("Vectors must have the same length for subtraction.")
+        return Vector(*(a - b for a, b in zip(self.components, other.components)))
+
+    def __mul__(self, other):
+        if isinstance(other, (int, float)):  # Scalar multiplication
+            return Vector(*(a * other for a in self.components))
+        if len(self) != len(other):  # Element-wise multiplication
+            raise ValueError("Vectors must have the same length for multiplication.")
+        return Vector(*(a * b for a, b in zip(self.components, other.components)))
+
+    def __truediv__(self, scalar):
+        if not isinstance(scalar, (int, float)):
+            raise ValueError("Division only supports scalar values.")
+        return Vector(*(a / scalar for a in self.components))
+
+    def __eq__(self, other):
+        return self.components == other.components
+
+    def __neg__(self):
+        return Vector(*(-a for a in self.components))
+
+    def __abs__(self):
+        return math.sqrt(sum(a ** 2 for a in self.components))
+
+
+# Example Usage
+v1 = Vector(1, 4, 6)
+v2 = Vector(3, 7, 2)
+print(v1 + v2) 
+print(v1 - v2)  
+print(v1 * v2) 
+print(v1 * 2)   
+print(v1 / 2)   
+print(abs(v1))  
+print(-v1)     
+print(bool(v1)) 
+print(bool(Vector(0, 0, 0)))  
+
+
+
+###################################
+
+
+
+
+
+
+
+import json
+from datetime import datetime
+
+class Note:
+    def __init__(self, note_id, text, created_date=None):
+        self.id = note_id
+        self.text = text
+        self.created_date = created_date or datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    def to_dict(self):
+        return {"id": self.id, "text": self.text, "created_date": self.created_date}
+
+class Notebook:
+    def __init__(self, filename='notes.json'):
+        self.filename = filename
+        self.notes = []
+        self.load_notes()
+
+    def load_notes(self):
+        try:
+            with open(self.filename, 'r') as file:
+                self.notes = [Note(**note) for note in json.load(file)]
+        except (FileNotFoundError, json.JSONDecodeError):
+            self.notes = []
+
+    def save_notes(self):
+        with open(self.filename, 'w') as file:
+            json.dump([note.to_dict() for note in self.notes], file, indent=4)
+
+    def add_note(self, text):
+        note_id = (max((note.id for note in self.notes), default=0) + 1) if self.notes else 1
+        self.notes.append(Note(note_id, text))
+        self.save_notes()
+        print("Note added successfully.")
+
+    def update_note(self, note_id, new_text):
+        for note in self.notes:
+            if note.id == note_id:
+                note.text = new_text
+                self.save_notes()
+                print("Note updated successfully.")
+                return
+        print("Note not found.")
+
+    def delete_note(self, note_id):
+        for note in self.notes:
+            if note.id == note_id:
+                self.notes.remove(note)
+                self.save_notes()
+                print("Note deleted successfully.")
+                return
+        print("Note not found.")
+
+    def show_all_notes(self):
+        if not self.notes:
+            print("No notes available.")
+        for note in self.notes:
+            print(f"ID: {note.id}, Created Date: {note.created_date}")
+
+    def show_note_details(self, note_id):
+        for note in self.notes:
+            if note.id == note_id:
+                print(f"ID: {note.id}\nText: {note.text}\nCreated Date: {note.created_date}")
+                return
+        print("Note not found.")
+
+def main():
+    notebook = Notebook()
+    while True:
+        print("\nNotebook Menu:")
+        print("1. Show All Notes")
+        print("2. Show Note Details")
+        print("3. Create Note")
+        print("4. Update Note")
+        print("5. Delete Note")
+        print("6. Exit")
+
+        choice = input("Enter your choice: ")
+        if choice == '1':
+            notebook.show_all_notes()
+        elif choice == '2':
+            note_id = int(input("Enter note ID: "))
+            notebook.show_note_details(note_id)
+        elif choice == '3':
+            text = input("Enter note text: ")
+            notebook.add_note(text)
+        elif choice == '4':
+            note_id = int(input("Enter note ID: "))
+            new_text = input("Enter new text: ")
+            notebook.update_note(note_id, new_text)
+        elif choice == '5':
+            note_id = int(input("Enter note ID: "))
+            notebook.delete_note(note_id)
+        elif choice == '6':
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == '__main__':
+    main()
+
+
+
+
