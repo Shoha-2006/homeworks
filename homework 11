@@ -4,7 +4,6 @@ import pandas as pd
 
 
 
-
 fact_internet_sales = pd.read_csv('C:/Users/maabi/OneDrive/Desktop/New folder/homeworks1/homeworks/fact_internet_sales.csv')
 dim_product = pd.read_csv('C:/Users/maabi/OneDrive/Desktop/New folder/homeworks1/homeworks/dim_product.csv')
 dim_date = pd.read_csv('C:/Users/maabi/OneDrive/Desktop/New folder/homeworks1/homeworks/dim_date.csv')
